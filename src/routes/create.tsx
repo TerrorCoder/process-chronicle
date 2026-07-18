@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { savePortfolio, type Draft } from "@/lib/portfolio-store";
 
 async function extractDocxText(file: File): Promise<string> {
