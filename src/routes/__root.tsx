@@ -77,19 +77,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Proof of Process" },
+      {
+        name: "description",
+        content:
+          "Document the evolution of your writing to prove authentic authorship — without unreliable AI detectors.",
+      },
+      { property: "og:title", content: "Proof of Process" },
+      {
+        property: "og:description",
+        content: "Document authentic authorship through your real writing process.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -114,13 +122,75 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link to="/" className="group flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4v16" /><path d="M4 12h10" /><path d="M14 4l6 4-6 4" />
+            </svg>
+          </span>
+          <span className="font-display text-lg font-medium tracking-tight text-ink">
+            Proof of Process
+          </span>
+        </Link>
+        <nav className="flex items-center gap-1 text-sm">
+          <Link
+            to="/"
+            activeOptions={{ exact: true }}
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground"
+          >
+            Home
+          </Link>
+          <Link
+            to="/create"
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground"
+          >
+            Create
+          </Link>
+          <Link
+            to="/portfolio"
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="hidden rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground sm:inline-block"
+          >
+            Portfolio
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-border/60 py-10">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} Proof of Process — a tool for honest writers.</p>
+        <p>Your drafts stay in your browser.</p>
+      </div>
+    </footer>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </div>
     </QueryClientProvider>
   );
 }
