@@ -67,15 +67,15 @@ function Create() {
   async function handleUpload(id: string, file: File | null | undefined) {
     if (!file) return;
     const name = file.name.toLowerCase();
-    if (!name.endsWith(".docx") && !name.endsWith(".doc")) {
-      updateDraft(id, { uploadError: "Only .docx files are supported." } as never);
-      setUploadState((s) => ({ ...s, [id]: { error: "Only .docx files are supported." } }));
-      return;
-    }
     if (name.endsWith(".doc") && !name.endsWith(".docx")) {
       setUploadState((s) => ({ ...s, [id]: { error: "Legacy .doc files aren't supported. Save as .docx." } }));
       return;
     }
+    if (!name.endsWith(".docx")) {
+      setUploadState((s) => ({ ...s, [id]: { error: "Only .docx files are supported." } }));
+      return;
+    }
+
     setUploadState((s) => ({ ...s, [id]: { loading: true } }));
     try {
       const text = await extractDocxText(file);
