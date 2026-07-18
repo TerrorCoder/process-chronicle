@@ -61,6 +61,30 @@ function Create() {
     setDrafts((prev) => (prev.length <= 2 ? prev : prev.filter((d) => d.id !== id)));
   }
 
+  async function handleUpload(id: string, file: File | null | undefined) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    if (!name.endsWith(".docx") && !name.endsWith(".doc")) {
+      updateDraft(id, { uploadError: "Only .docx files are supported." } as never);
+      setUploadState((s) => ({ ...s, [id]: { error: "Only .docx files are supported." } }));
+      return;
+    }
+    if (name.endsWith(".doc") && !name.endsWith(".docx")) {
+      setUploadState((s) => ({ ...s, [id]: { error: "Legacy .doc files aren't supported. Save as .docx." } }));
+      return;
+    }
+    setUploadState((s) => ({ ...s, [id]: { loading: true } }));
+    try {
+      const text = await extractDocxText(file);
+      updateDraft(id, { content: text, label: file.name.replace(/\.docx$/i, "") });
+      setUploadState((s) => ({ ...s, [id]: { fileName: file.name } }));
+    } catch (err) {
+      console.error(err);
+      setUploadState((s) => ({ ...s, [id]: { error: "Couldn't read that file." } }));
+    }
+  }
+
+
   function submit() {
     if (!canSubmit) return;
     savePortfolio({
