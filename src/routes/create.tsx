@@ -39,6 +39,9 @@ function Create() {
     { id: uid(), label: "Draft 1", content: "" },
     { id: uid(), label: "Revision", content: "" },
   ]);
+  type UploadState = { loading?: boolean; error?: string; fileName?: string };
+  const [uploadState, setUploadState] = useState<Record<string, UploadState>>({});
+
 
   const filledCount = drafts.filter((d) => d.content.trim().length > 0).length;
   const progress = useMemo(
