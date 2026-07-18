@@ -122,13 +122,75 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link to="/" className="group flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4v16" /><path d="M4 12h10" /><path d="M14 4l6 4-6 4" />
+            </svg>
+          </span>
+          <span className="font-display text-lg font-medium tracking-tight text-ink">
+            Proof of Process
+          </span>
+        </Link>
+        <nav className="flex items-center gap-1 text-sm">
+          <Link
+            to="/"
+            activeOptions={{ exact: true }}
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground"
+          >
+            Home
+          </Link>
+          <Link
+            to="/create"
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground"
+          >
+            Create
+          </Link>
+          <Link
+            to="/portfolio"
+            activeProps={{ className: "text-foreground" }}
+            inactiveProps={{ className: "text-muted-foreground" }}
+            className="hidden rounded-md px-3 py-2 font-medium transition-colors hover:text-foreground sm:inline-block"
+          >
+            Portfolio
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-border/60 py-10">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} Proof of Process — a tool for honest writers.</p>
+        <p>Your drafts stay in your browser.</p>
+      </div>
+    </footer>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </div>
     </QueryClientProvider>
   );
 }
