@@ -1,6 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { savePortfolio, type Draft } from "@/lib/portfolio-store";
+
+async function extractDocxText(file: File): Promise<string> {
+  const mammoth = await import("mammoth/mammoth.browser");
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  return result.value.trim();
+}
+
 
 export const Route = createFileRoute("/create")({
   head: () => ({
