@@ -3,11 +3,13 @@ import { useMemo, useRef, useState } from "react";
 import { savePortfolio, type Draft } from "@/lib/portfolio-store";
 
 async function extractDocxText(file: File): Promise<string> {
+  // @ts-expect-error - no types for browser bundle
   const mammoth = await import("mammoth/mammoth.browser");
   const arrayBuffer = await file.arrayBuffer();
   const result = await mammoth.extractRawText({ arrayBuffer });
-  return result.value.trim();
+  return (result.value as string).trim();
 }
+
 
 
 export const Route = createFileRoute("/create")({
