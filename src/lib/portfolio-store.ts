@@ -9,6 +9,7 @@ export type Portfolio = {
   reflection: string;
   drafts: Draft[];
   createdAt: string;
+  summary?: string;
 };
 
 const KEY = "pop:portfolio";

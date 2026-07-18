@@ -4,13 +4,9 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
+  useMatches,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
-
-import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { useEffect } from "react";
 
 function NotFoundComponent() {
   return (
@@ -37,9 +33,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -91,36 +84,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap",
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function SiteHeader() {
   return (
@@ -181,6 +149,55 @@ function SiteFooter() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const matches = useMatches();
+  const router = useRouter();
+
+  useEffect(() => {
+    let title = "";
+    let description = "";
+
+    for (const match of matches) {
+      const route = (router.routesById as any)[match.routeId];
+      const headFn = route?.options?.head;
+      if (headFn) {
+        try {
+          const resolved = typeof headFn === "function" ? headFn({
+            matches,
+            match,
+            params: match.params,
+            loaderData: (match as any).loaderData,
+            context: router.options.context
+          }) : headFn;
+          
+          if (resolved?.meta) {
+            for (const m of resolved.meta) {
+              if ("title" in m && m.title) {
+                title = m.title;
+              } else if ("name" in m && m.name === "description" && m.content) {
+                description = m.content;
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Error evaluating route head:", e);
+        }
+      }
+    }
+
+    if (title) {
+      document.title = title;
+    }
+    
+    if (description) {
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', description);
+    }
+  }, [matches, router.options.context]);
 
   return (
     <QueryClientProvider client={queryClient}>
