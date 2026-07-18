@@ -2,6 +2,16 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { savePortfolio, type Draft } from "@/lib/portfolio-store";
 
+async function extractDocxText(file: File): Promise<string> {
+  // @ts-expect-error - no types for browser bundle
+  const mammoth = await import("mammoth/mammoth.browser");
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  return (result.value as string).trim();
+}
+
+
+
 export const Route = createFileRoute("/create")({
   head: () => ({
     meta: [
@@ -29,6 +39,9 @@ function Create() {
     { id: uid(), label: "Draft 1", content: "" },
     { id: uid(), label: "Revision", content: "" },
   ]);
+  type UploadState = { loading?: boolean; error?: string; fileName?: string };
+  const [uploadState, setUploadState] = useState<Record<string, UploadState>>({});
+
 
   const filledCount = drafts.filter((d) => d.content.trim().length > 0).length;
   const progress = useMemo(
@@ -50,6 +63,30 @@ function Create() {
   function removeDraft(id: string) {
     setDrafts((prev) => (prev.length <= 2 ? prev : prev.filter((d) => d.id !== id)));
   }
+
+  async function handleUpload(id: string, file: File | null | undefined) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    if (name.endsWith(".doc") && !name.endsWith(".docx")) {
+      setUploadState((s) => ({ ...s, [id]: { error: "Legacy .doc files aren't supported. Save as .docx." } }));
+      return;
+    }
+    if (!name.endsWith(".docx")) {
+      setUploadState((s) => ({ ...s, [id]: { error: "Only .docx files are supported." } }));
+      return;
+    }
+
+    setUploadState((s) => ({ ...s, [id]: { loading: true } }));
+    try {
+      const text = await extractDocxText(file);
+      updateDraft(id, { content: text, label: file.name.replace(/\.docx$/i, "") });
+      setUploadState((s) => ({ ...s, [id]: { fileName: file.name } }));
+    } catch (err) {
+      console.error(err);
+      setUploadState((s) => ({ ...s, [id]: { error: "Couldn't read that file." } }));
+    }
+  }
+
 
   function submit() {
     if (!canSubmit) return;
@@ -134,9 +171,40 @@ function Create() {
               rows={8}
               className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-sm leading-relaxed outline-none transition-shadow focus:ring-2 focus:ring-ring"
             />
-            <div className="mt-2 text-right text-xs text-muted-foreground">
-              {d.content.trim().split(/\s+/).filter(Boolean).length} words
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 font-medium text-muted-foreground transition-colors hover:border-teal hover:text-teal">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  {uploadState[d.id]?.loading ? "Reading…" : "Upload .docx"}
+                  <input
+                    type="file"
+                    accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      handleUpload(d.id, f);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+                {uploadState[d.id]?.fileName && !uploadState[d.id]?.error && (
+                  <span className="text-muted-foreground">
+                    Loaded <span className="font-medium text-foreground">{uploadState[d.id]!.fileName}</span>
+                  </span>
+                )}
+                {uploadState[d.id]?.error && (
+                  <span className="text-destructive">{uploadState[d.id]!.error}</span>
+                )}
+              </div>
+              <span className="text-muted-foreground">
+                {d.content.trim().split(/\s+/).filter(Boolean).length} words
+              </span>
             </div>
+
           </div>
         ))}
       </div>
