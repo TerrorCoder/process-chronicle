@@ -1,0 +1,185 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { savePortfolio, type Draft } from "@/lib/portfolio-store";
+
+export const Route = createFileRoute("/create")({
+  head: () => ({
+    meta: [
+      { title: "Create Portfolio — Proof of Process" },
+      {
+        name: "description",
+        content: "Add your drafts and revisions to build a portfolio of your writing process.",
+      },
+    ],
+  }),
+  component: Create,
+});
+
+const DEFAULT_LABELS = ["Draft 1", "Revision", "Final"];
+
+function uid() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+function Create() {
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [reflection, setReflection] = useState("");
+  const [drafts, setDrafts] = useState<Draft[]>([
+    { id: uid(), label: "Draft 1", content: "" },
+    { id: uid(), label: "Revision", content: "" },
+  ]);
+
+  const filledCount = drafts.filter((d) => d.content.trim().length > 0).length;
+  const progress = useMemo(
+    () => Math.min(100, Math.round((filledCount / Math.max(drafts.length, 1)) * 100)),
+    [filledCount, drafts.length]
+  );
+
+  const canSubmit = title.trim().length > 0 && filledCount >= 2;
+
+  function updateDraft(id: string, patch: Partial<Draft>) {
+    setDrafts((prev) => prev.map((d) => (d.id === id ? { ...d, ...patch } : d)));
+  }
+
+  function addDraft() {
+    const next = DEFAULT_LABELS[drafts.length] ?? `Draft ${drafts.length + 1}`;
+    setDrafts((prev) => [...prev, { id: uid(), label: next, content: "" }]);
+  }
+
+  function removeDraft(id: string) {
+    setDrafts((prev) => (prev.length <= 2 ? prev : prev.filter((d) => d.id !== id)));
+  }
+
+  function submit() {
+    if (!canSubmit) return;
+    savePortfolio({
+      title: title.trim(),
+      reflection: reflection.trim(),
+      drafts: drafts.filter((d) => d.content.trim().length > 0),
+      createdAt: new Date().toISOString(),
+    });
+    navigate({ to: "/portfolio" });
+  }
+
+  return (
+    <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
+      <header className="mb-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
+          New portfolio
+        </p>
+        <h1 className="mt-2 text-4xl sm:text-5xl">Document your process.</h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Paste each version of your piece in the order you wrote it. The more honest the
+          progression, the stronger the record.
+        </p>
+      </header>
+
+      {/* Progress */}
+      <div className="mb-10 rounded-xl border border-border bg-card p-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium">
+            {filledCount} of {drafts.length} drafts filled
+          </span>
+          <span className="text-muted-foreground">{progress}%</span>
+        </div>
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-muted">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-teal transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Title */}
+      <div className="mb-8">
+        <label className="mb-2 block text-sm font-medium">Essay / piece title</label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="e.g. On Memory and Migration"
+          className="w-full rounded-md border border-input bg-card px-4 py-3 text-base outline-none transition-shadow focus:ring-2 focus:ring-ring"
+        />
+      </div>
+
+      {/* Drafts */}
+      <div className="space-y-6">
+        {drafts.map((d, i) => (
+          <div key={d.id} className="card-elevated rounded-xl p-6">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                  {i + 1}
+                </span>
+                <input
+                  value={d.label}
+                  onChange={(e) => updateDraft(d.id, { label: e.target.value })}
+                  className="rounded border-none bg-transparent px-1 text-lg font-medium outline-none focus:bg-surface-muted"
+                />
+              </div>
+              {drafts.length > 2 && (
+                <button
+                  onClick={() => removeDraft(d.id)}
+                  className="text-xs text-muted-foreground hover:text-destructive"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+            <textarea
+              value={d.content}
+              onChange={(e) => updateDraft(d.id, { content: e.target.value })}
+              placeholder="Paste this version of your writing here…"
+              rows={8}
+              className="w-full resize-y rounded-md border border-input bg-background px-4 py-3 text-sm leading-relaxed outline-none transition-shadow focus:ring-2 focus:ring-ring"
+            />
+            <div className="mt-2 text-right text-xs text-muted-foreground">
+              {d.content.trim().split(/\s+/).filter(Boolean).length} words
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={addDraft}
+        className="mt-4 w-full rounded-xl border border-dashed border-border bg-transparent py-4 text-sm font-medium text-muted-foreground transition-colors hover:border-teal hover:bg-surface-muted hover:text-teal"
+      >
+        + Add another draft
+      </button>
+
+      {/* Reflection */}
+      <div className="mt-10">
+        <label className="mb-2 block text-sm font-medium">
+          Reflection <span className="font-normal text-muted-foreground">(optional)</span>
+        </label>
+        <p className="mb-3 text-sm text-muted-foreground">
+          Why did you make these changes? A few sentences in your own voice.
+        </p>
+        <textarea
+          value={reflection}
+          onChange={(e) => setReflection(e.target.value)}
+          rows={5}
+          placeholder="I rewrote the opening because…"
+          className="w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-8">
+        <p className="text-xs text-muted-foreground">
+          {canSubmit
+            ? "Ready when you are."
+            : "Add a title and at least two drafts to generate your portfolio."}
+        </p>
+        <button
+          onClick={submit}
+          disabled={!canSubmit}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Generate my portfolio
+          <span aria-hidden>→</span>
+        </button>
+      </div>
+    </div>
+  );
+}
