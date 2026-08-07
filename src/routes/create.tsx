@@ -15,7 +15,7 @@ async function extractDocxText(file: File): Promise<string> {
 export const Route = createFileRoute("/create")({
   head: () => ({
     meta: [
-      { title: "Create Portfolio — Proof of Process" },
+      { title: "Create Portfolio - Proof of Process" },
       {
         name: "description",
         content: "Add your drafts and revisions to build a portfolio of your writing process.",

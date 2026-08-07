@@ -7,7 +7,7 @@
 
 ## The Inspiration & The Problem
 
-In an era dominated by generative AI, honest writers are facing a major challenge: **unreliable AI detectors**. Academic institutions and publishers rely on black-box tools that produce high rates of false positives—especially for non-native English speakers.
+In an era dominated by generative AI, honest writers are facing a major challenge: **unreliable AI detectors**. Academic institutions and publishers rely on black-box tools that produce high rates of false positives-especially for non-native English speakers.
 
 Instead of trying to analyze a static final document *post-factum*, **Proof of Process** takes a completely different approach: it tracks the **historical evolution of the text**. By showing *how* a piece of writing grew from a rough brainstorm, through structural changes, to a final polished draft, writers can present undeniable, verifiable proof of their own human thinking.
 

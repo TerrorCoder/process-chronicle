@@ -74,7 +74,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Document the evolution of your writing to prove authentic authorship — without unreliable AI detectors.",
+          "Document the evolution of your writing to prove authentic authorship - without unreliable AI detectors.",
       },
       { property: "og:title", content: "Proof of Process" },
       {
@@ -140,7 +140,7 @@ function SiteFooter() {
   return (
     <footer className="border-t border-border/60 py-10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 text-xs text-muted-foreground">
-        <p>© {new Date().getFullYear()} Proof of Process — a tool for honest writers.</p>
+        <p>© {new Date().getFullYear()} Proof of Process - a tool for honest writers.</p>
         <p>Your drafts stay in your browser.</p>
       </div>
     </footer>
@@ -168,7 +168,7 @@ function RootComponent() {
             loaderData: (match as any).loaderData,
             context: router.options.context
           }) : headFn;
-          
+
           if (resolved?.meta) {
             for (const m of resolved.meta) {
               if ("title" in m && m.title) {
@@ -187,7 +187,7 @@ function RootComponent() {
     if (title) {
       document.title = title;
     }
-    
+
     if (description) {
       let metaDesc = document.querySelector('meta[name="description"]');
       if (!metaDesc) {

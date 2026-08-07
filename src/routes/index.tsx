@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Proof of Process — Document your authentic writing" },
+      { title: "Proof of Process - Document your authentic writing" },
       {
         name: "description",
         content:
@@ -37,7 +37,7 @@ function Landing() {
           </h1>
           <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
             AI detectors are unreliable and biased. Proof of Process helps students document the
-            real evolution of their writing — drafts, revisions, second thoughts — so authorship
+            real evolution of their writing - drafts, revisions, second thoughts - so authorship
             speaks for itself.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -72,7 +72,7 @@ function Landing() {
               {
                 n: "01",
                 t: "Paste your drafts",
-                d: "Add every version of your work — from the messy first attempt to the polished final piece.",
+                d: "Add every version of your work - from the messy first attempt to the polished final piece.",
               },
               {
                 n: "02",
@@ -107,7 +107,7 @@ function Landing() {
           <div className="space-y-6 text-base leading-relaxed text-foreground/80 md:col-span-3">
             <p>
               Stanford researchers found that widely-used GPT detectors flagged more than half of
-              essays written by non-native English speakers as AI-generated — while essays by
+              essays written by non-native English speakers as AI-generated - while essays by
               native speakers passed almost untouched.
             </p>
             <p>

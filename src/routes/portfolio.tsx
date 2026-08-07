@@ -5,7 +5,7 @@ import { clearPortfolio, diffWords, loadPortfolio, savePortfolio, type Portfolio
 export const Route = createFileRoute("/portfolio")({
   head: () => ({
     meta: [
-      { title: "Your Portfolio — Proof of Process" },
+      { title: "Your Portfolio - Proof of Process" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -50,7 +50,7 @@ function PortfolioPage() {
           } else if (typeof errData === 'object') {
             errMsg = JSON.stringify(errData);
           }
-        } catch {}
+        } catch { }
         throw new Error(errMsg);
       }
 
@@ -60,7 +60,7 @@ function PortfolioPage() {
       }
 
       setSummary(data.summary);
-      
+
       const updatedPortfolio = { ...p, summary: data.summary };
       setPortfolio(updatedPortfolio);
       savePortfolio(updatedPortfolio);
@@ -125,7 +125,7 @@ function PortfolioPage() {
       setSummary(fallbackSummary);
       setUsingFallback(true);
       setError(null);
-      
+
       const updatedPortfolio = { ...portfolio, summary: fallbackSummary };
       setPortfolio(updatedPortfolio);
       savePortfolio(updatedPortfolio);
@@ -235,7 +235,7 @@ function PortfolioPage() {
           Process summary
         </p>
         <h2 className="mt-2 text-2xl sm:text-3xl">How this piece evolved</h2>
-        
+
         {loading && (
           <div className="mt-6 card-elevated rounded-xl p-8 bg-card/60 backdrop-blur-md border border-border/80 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-teal/5 to-transparent animate-shimmer -translate-x-full" />
@@ -291,8 +291,8 @@ function PortfolioPage() {
               {summary}
             </p>
             <p className="mt-6 text-xs italic text-muted-foreground">
-              {usingFallback 
-                ? "Preview summary generated client-side." 
+              {usingFallback
+                ? "Preview summary generated client-side."
                 : "AI-generated process summary."}
             </p>
           </div>
@@ -326,5 +326,5 @@ function generateLocalSummary(p: Portfolio): string {
   const delta = lastWords - firstWords;
   const direction = delta > 0 ? "expanded" : delta < 0 ? "tightened" : "held steady";
 
-  return `Across ${p.drafts.length} versions, "${p.title}" moved from an initial ${firstWords}-word draft to a ${lastWords}-word final piece — the writer ${direction} the work by ${Math.abs(delta)} words in the process. The early draft opens with an exploratory framing that later drafts sharpen; middle revisions rework the argument's sequencing, and the final pass focuses on tone, precision, and closing lines. Additions cluster around evidence and voice, while deletions remove hedging and repetition. Taken together, the drafts read as the record of a thinking writer, not a single generated artifact.`;
+  return `Across ${p.drafts.length} versions, "${p.title}" moved from an initial ${firstWords}-word draft to a ${lastWords}-word final piece - the writer ${direction} the work by ${Math.abs(delta)} words in the process. The early draft opens with an exploratory framing that later drafts sharpen; middle revisions rework the argument's sequencing, and the final pass focuses on tone, precision, and closing lines. Additions cluster around evidence and voice, while deletions remove hedging and repetition. Taken together, the drafts read as the record of a thinking writer, not a single generated artifact.`;
 }
