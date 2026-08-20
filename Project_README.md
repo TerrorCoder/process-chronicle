@@ -1,57 +1,55 @@
 # Proof of Process (Process Chronicle) 
 
-> **Hoobit Hacks 2026 Hackathon Project**
+![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial_1.0.0-blue.svg)
+![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)
+![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django&logoColor=white)
+
 > A verifiable record of human authorship, documenting the *evolution* of writing to prove authentic creation without unreliable AI detectors.
 
 ---
 
-## The Inspiration & The Problem
+## Overview & Vision
 
-In an era dominated by generative AI, honest writers are facing a major challenge: **unreliable AI detectors**. Academic institutions and publishers rely on black-box tools that produce high rates of false positives-especially for non-native English speakers.
+In an era dominated by generative AI, honest writers face a growing challenge: **unreliable AI detectors**. Academic institutions, publishers, and platforms rely on black-box statistical tools that produce high rates of false positives—especially for non-native speakers, structured technical content, and formal prose.
 
-Instead of trying to analyze a static final document *post-factum*, **Proof of Process** takes a completely different approach: it tracks the **historical evolution of the text**. By showing *how* a piece of writing grew from a rough brainstorm, through structural changes, to a final polished draft, writers can present undeniable, verifiable proof of their own human thinking.
-
----
-
-## Key Features
-
-1. **Chronological Version Tracking**: Log and visualize multiple draft versions in the order they were written.
-2. **Word-Level Diff Analysis**: Interactive side-by-side comparison highlighting word-by-word additions and deletions between subsequent revisions.
-3. **AI-Generated Process Summary**: A server-side REST API analyzes structural changes, tone shifts, and the writer's reflections to construct a cohesive paragraph outlining the writing journey.
-4. **Author's Reflection Log**: Allows writers to explain *why* they made certain adjustments, adding human intent to the record.
-5. **Private & Stateless by Design**: Portfolios are cached locally in the browser (`localStorage`), ensuring complete data privacy.
-6. **Smart Caching**: Successfully generated summaries are saved in the local store, avoiding redundant server calls and minimizing API costs.
-7. **Polished & Premium UI**: A glowing, modern glassmorphism design with responsive skeleton loaders and transition micro-animations.
+Instead of trying to analyze a static final document *post-factum*, **Proof of Process** takes an evolutionary approach: it tracks the **historical development of the text**. By documenting how a piece of writing grew from initial thoughts, through structural revisions, to a final polished draft, writers can present clear, verifiable evidence of authentic human thought.
 
 ---
 
-## Technology Stack
+## Core Capabilities
 
-### Frontend
+1. **Chronological Version Tracking**: Log and visualize multiple draft versions in the exact sequence they were composed.
+2. **Word-Level Diff Visualizer**: Interactive side-by-side comparison highlighting word-by-word additions, deletions, and structural changes.
+3. **AI-Generated Process Summary**: Server-side REST API analyzes structural changes, tone shifts, and author reflections to construct a cohesive summary of the writing process.
+4. **Author's Reflection Log**: Contextual fields for writers to record intentional rationale for major adjustments.
+5. **Private & Stateless Architecture**: Portfolios are cached locally in the browser (`localStorage`), ensuring complete data privacy.
+6. **Smart Caching**: Process summaries are saved in the client store, preventing redundant server calls and optimizing API usage.
+7. **Document Importing**: Direct upload support for `.docx` files via Mammoth.js.
 
+---
+
+## Architecture & Tech Stack
+
+### Frontend Application
 - **Framework**: React 19 (via Vite)
-- **Routing**: TanStack Router (Typescript-safe routing)
-- **Styling**: Tailwind CSS v4 (with customized glassmorphism themes)
+- **Routing**: TanStack Router (Typescript file-based routing)
+- **Styling**: Tailwind CSS v4 (with custom glassmorphism design system)
 - **Icons**: Lucide React
-- **Document Loading**: Mammoth.js (loads `.docx` files directly into drafts)
+- **Document Loading**: Mammoth.js (loads `.docx` files into draft fields)
 
-### Backend
-
-- **Core Framework**: Django 5.x
-- **API Engine**: Django REST Framework (DRF)
+### Backend API
+- **Framework**: Django 5.x with Django REST Framework (DRF)
 - **CORS Management**: `django-cors-headers`
 - **LLM Integrations**:
-  - **Google Gemini API** (via `google-generativeai` SDK)
-  - **OpenAI API** (via `openai` SDK as secondary/fallback)
+  - Primary: Google Gemini API (`google-generativeai`)
+  - Fallback: OpenAI API (`openai`)
 - **Environment config**: `python-dotenv`
 
 ---
 
-## Quick Start Guide
+## Quick Setup
 
-### 1. Backend Setup (Django API)
-
-The backend acts as the AI summarizer. Navigate to the `backend` folder, set up your Python environment, and start the API server:
+### 1. Backend Service (Django API)
 
 ```bash
 # Navigate to backend directory
@@ -60,64 +58,52 @@ cd backend
 # Create a virtual environment
 python -m venv venv
 
-# Activate the environment
-# On Windows (PowerShell):
+# Activate virtual environment
+# Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 
-# Install requirements
+# Install dependencies
 pip install -r requirements.txt
 
-# Create environment file
+# Create environment configuration
 cp .env.example .env
 ```
 
-Open `.env` and fill in your Django secret key and API keys:
-
+Set your keys in `backend/.env`:
 ```env
-SECRET_KEY=generate-a-secure-random-key
-DEBUG=True
-OPENAI_API_KEY=your-openai-api-key-here
+SECRET_KEY=your-secure-secret-key
+GEMINI_API_KEY=your-gemini-api-key
 # OR
-GEMINI_API_KEY=your-gemini-api-key-here
+OPENAI_API_KEY=your-openai-api-key
 ```
 
-Once configured, run the server:
-
+Run database migrations and launch the backend:
 ```bash
-# Run migrations
 python manage.py migrate
-
-# Launch backend
 python manage.py runserver
 ```
-
-The Django REST API runs at `http://localhost:8000/`.
+The Django REST API operates at `http://localhost:8000/`.
 
 ---
 
-### 2. Frontend Setup (React/Vite)
+### 2. Frontend Web Client (React/Vite)
 
-Navigate back to the project root directory, install npm packages, and run the hot-reloading development server:
-
+From the project root directory:
 ```bash
 # Install dependencies
-bun install   # or npm install / yarn install
+bun install   # or npm install
 
-# Start Vite dev server
+# Launch development server
 bun dev       # or npm run dev
 ```
-
-The application will open at `http://localhost:5173/`.
+The web application will open at `http://localhost:5173/`.
 
 ---
 
-## Testing the Flow
+## License
 
-1. Go to the dashboard and click **Start a new portfolio**.
-2. Give your piece a title (e.g. *"The Silence of Cities"*).
-3. Paste different versions of your drafts (e.g. starting with a rough 3-sentence draft, followed by an expanded version, and then a polished final text).
-4. Fill in the optional reflection text explaining why you made structural adjustments.
-5. Click **Generate my portfolio**.
-6. Enjoy the beautiful shimmering loading state while the Django REST backend validates your inputs, compiles the drafts, queries the LLM, and prints your verifiable **Process Summary**!
+This software is licensed under the **PolyForm Noncommercial License 1.0.0**.
+
+Permission is granted to inspect, test, evaluate, and explore the code for noncommercial, research, and educational purposes. Commercial copying, distribution, or reproduction without explicit permission is prohibited. See [LICENSE](file:///c:/Users/Rose/Documents/Antigravity/process-chronicle/LICENSE) for details.
