@@ -106,4 +106,4 @@ The web application will open at `http://localhost:5173/`.
 
 This software is licensed under the **PolyForm Noncommercial License 1.0.0**.
 
-Permission is granted to inspect, test, evaluate, and explore the code for noncommercial, research, and educational purposes. Commercial copying, distribution, or reproduction without explicit permission is prohibited. See [LICENSE](file:///c:/Users/Rose/Documents/Antigravity/process-chronicle/LICENSE) for details.
+Permission is granted to inspect, test, evaluate, and explore the code for noncommercial, research, and educational purposes. Commercial copying, distribution, or reproduction without explicit permission is prohibited; however, terms and licensing for commercial purposes can be negotiated. See [LICENSE](file:///c:/Users/Rose/Documents/Antigravity/process-chronicle/LICENSE) for details.

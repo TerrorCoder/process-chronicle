@@ -496,7 +496,7 @@ print(response.json())
 This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
 
 - **Granted Rights**: You are free to inspect, download, run, test, evaluate, and modify the software for noncommercial, educational, or research purposes.
-- **Restrictions**: You may not use this software for commercial advantage, monetary compensation, or commercial reproduction/resale.
+- **Restrictions**: You may not use this software for commercial advantage, monetary compensation, or commercial reproduction/resale without a separate agreement. However, licensing for commercial purposes can be negotiated directly with the licensors.
 
 For the full legal agreement, refer to the root [`LICENSE`](file:///c:/Users/Rose/Documents/Antigravity/process-chronicle/LICENSE) file.
 

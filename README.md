@@ -304,6 +304,6 @@ This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
 You are free to inspect, download, modify, test, evaluate, run, and explore the codebase for **noncommercial purposes**, including personal research, educational evaluation, and non-monetized exploration.
 
 ### Restrictions
-Commercial use, unauthorized commercial distribution, reselling, or commercial reproduction of the software or services built upon it is strictly prohibited without explicit permission from the licensor.
+Commercial use, unauthorized commercial distribution, reselling, or commercial reproduction of the software or services built upon it is prohibited without a license. However, permissions and licensing for commercial purposes can be negotiated directly with the licensors.
 
 See the full [LICENSE](file:///c:/Users/Rose/Documents/Antigravity/process-chronicle/LICENSE) file for complete legal terms.
